@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Netflix_Intro_clone</string>
     <string name="button_text">2주 무료 이용</string>
+    <string name="sflix">SGflix</string>
+    <string name="login">로그인</string>
+    <string name="intro">Intro</string>
 </resources>
