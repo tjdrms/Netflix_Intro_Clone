@@ -32,8 +32,19 @@ class MainActivity : AppCompatActivity() {
 
         initInsetMargin()
 
+        initScrollViewListeners()
+
+        initMotionLayoutListener()
+
+    }
+
+    private fun initScrollViewListeners() {
+        binding.scrollView.smoothScrollTo(0, 0)
+
         binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
-            if (binding.scrollView.scrollY > 150f.dpToPx(this).toInt()) {
+            val scrolledValue = binding.scrollView.scrollY
+
+            if (scrolledValue > 150f.dpToPx(this@MainActivity).toInt()) {
                 if (isGatheringMotionAnimating.not()) {
                     binding.gatheringDigitalThingsLayout.transitionToEnd()
                     binding.buttonShownMotionLayout.transitionToEnd()
@@ -45,8 +56,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
-        binding.gatheringDigitalThingsLayout.setTransitionListener(object : MotionLayout.TransitionListener {
+    private fun initMotionLayoutListener() {
+        binding.gatheringDigitalThingsLayout.setTransitionListener(object: MotionLayout.TransitionListener {
             override fun onTransitionStarted(
                 motionLayout: MotionLayout?,
                 startId: Int,
@@ -72,19 +85,22 @@ class MainActivity : AppCompatActivity() {
                 positive: Boolean,
                 progress: Float
             ) = Unit
+
         })
     }
 
     private fun initInsetMargin() = with(binding) {
-        ViewCompat.setOnApplyWindowInsetsListener(coordinator) {v: View, insets: WindowInsetsCompat ->
+        ViewCompat.setOnApplyWindowInsetsListener(coordinator) { v: View, insets: WindowInsetsCompat ->
             val params = v.layoutParams as ViewGroup.MarginLayoutParams
             params.bottomMargin = insets.systemWindowInsetBottom
-            toolBarContainer.layoutParams = (toolBarContainer.layoutParams as ViewGroup.MarginLayoutParams).apply {
-                setMargins(0, insets.systemWindowInsetTop, 0, 0)
-            }
-            collapsingToolBarContainer.layoutParams = (collapsingToolBarContainer.layoutParams as ViewGroup.MarginLayoutParams).apply {
-                setMargins(0,0,0,0)
-            }
+            toolBarContainer.layoutParams =
+                (toolBarContainer.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    setMargins(0, insets.systemWindowInsetTop, 0, 0)
+                }
+            collapsingToolBarContainer.layoutParams =
+                (collapsingToolBarContainer.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    setMargins(0, 0, 0, 0)
+                }
 
             insets.consumeSystemWindowInsets()
         }
@@ -92,15 +108,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initAppBar() {
         binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val topPadding = 120f.dpToPx(this)
+            val topPadding = 300f.dpToPx(this)
+            val realAlphaScrollHeight = appBarLayout.measuredHeight - appBarLayout.totalScrollRange
             val abstractOffSet = abs(verticalOffset)
+            val realAlphaVerticalOffset =
+                if (abstractOffSet - topPadding < 0) 0f else abstractOffSet - topPadding
             if (abstractOffSet < topPadding) {
                 binding.toolBarBackgroundView.alpha = 0f
                 return@OnOffsetChangedListener
             }
-            val verticalOffsetByTopPadding = abstractOffSet - topPadding
-            val percentage = abs(verticalOffsetByTopPadding) / appBarLayout.totalScrollRange
-            binding.toolBarBackgroundView.alpha = 1 - (if(1 - percentage * 2 < 0) 0f else 1 - percentage * 2)
+            val percentage = realAlphaVerticalOffset / realAlphaScrollHeight
+            binding.toolBarBackgroundView.alpha =
+                1 - (if (1 - percentage * 2 < 0) 0f else 1 - percentage * 2)
         })
         initActionBar()
     }

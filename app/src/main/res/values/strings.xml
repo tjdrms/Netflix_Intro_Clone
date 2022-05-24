@@ -4,4 +4,7 @@
     <string name="sflix">SGflix</string>
     <string name="login">로그인</string>
     <string name="intro">Intro</string>
+    <string name="intro_title">지금 무료로\n무제한 감상 시작</string>
+    <string name="two_weeks_free">2주 무료 이용</string>
+    <string name="introduce_contents">영화, 드라마, 예능 등 8만여 편의 작품</string>
 </resources>
