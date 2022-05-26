@@ -46,11 +46,13 @@ class MainActivity : AppCompatActivity() {
 
             if (scrolledValue > 150f.dpToPx(this@MainActivity).toInt()) {
                 if (isGatheringMotionAnimating.not()) {
+                    binding.gatheringDigitalThingsBackgroundMotionLayout.transitionToEnd()
                     binding.gatheringDigitalThingsLayout.transitionToEnd()
                     binding.buttonShownMotionLayout.transitionToEnd()
                 }
             } else {
                 if (isGatheringMotionAnimating.not()) {
+                    binding.gatheringDigitalThingsBackgroundMotionLayout.transitionToStart()
                     binding.gatheringDigitalThingsLayout.transitionToStart()
                     binding.buttonShownMotionLayout.transitionToStart()
                 }
